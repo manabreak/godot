@@ -73,7 +73,7 @@ Variant Camera3DGizmoPlugin::get_handle_value(const EditorNode3DGizmo *p_gizmo, 
 	if (camera->get_projection() == Camera3D::PROJECTION_PERSPECTIVE) {
 		return camera->get_fov();
 	} else {
-		return camera->get_size();
+		return camera->get_size_x();
 	}
 }
 
@@ -125,12 +125,14 @@ void Camera3DGizmoPlugin::commit_handle(const EditorNode3DGizmo *p_gizmo, int p_
 
 	} else {
 		if (p_cancel) {
-			camera->set("size", p_restore);
+			camera->set("size_x", p_restore);
 		} else {
 			EditorUndoRedoManager *ur = EditorUndoRedoManager::get_singleton();
-			ur->create_action(TTR("Change Camera Size"));
-			ur->add_do_property(camera, "size", camera->get_size());
-			ur->add_undo_property(camera, "size", p_restore);
+			ur->create_action(TTR("Change Camera Size X"));
+			ur->add_do_property(camera, "size_x", camera->get_size_x());
+			ur->add_undo_property(camera, "size_x", p_restore);
+			ur->add_do_property(camera, "size_y", camera->get_size_y());
+			ur->add_undo_property(camera, "size_y", p_restore);
 			ur->commit_action();
 		}
 	}
@@ -205,19 +207,21 @@ void Camera3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 		case Camera3D::PROJECTION_ORTHOGONAL: {
 			Camera3D::KeepAspect aspect = camera->get_keep_aspect_mode();
 
-			float size = camera->get_size();
-			float keep_size = size * 0.5;
+			float size_x = camera->get_size_x();
+			float keep_size_x = size_x * 0.5;
+			float size_y = camera->get_size_y();
+			float keep_size_y = size_y * 0.5;
 
 			Vector3 right, up;
 			Vector3 back(0, 0, -1.0);
 
 			if (aspect == Camera3D::KeepAspect::KEEP_WIDTH) {
-				right = Vector3(keep_size, 0, 0);
-				up = Vector3(0, keep_size / viewport_aspect, 0);
+				right = Vector3(keep_size_x, 0, 0);
+				up = Vector3(0, keep_size_x / viewport_aspect, 0);
 				handles.push_back(right + back);
 			} else {
-				right = Vector3(keep_size * viewport_aspect, 0, 0);
-				up = Vector3(0, keep_size, 0);
+				right = Vector3(keep_size_y / viewport_aspect, 0, 0);
+				up = Vector3(0, keep_size_y, 0);
 				handles.push_back(up + back);
 			}
 
@@ -226,13 +230,13 @@ void Camera3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 			ADD_QUAD(up + right, up + right + back, up - right + back, up - right);
 			ADD_QUAD(-up + right, -up + right + back, -up - right + back, -up - right);
 
-			right.x = MIN(right.x, keep_size * 0.25);
-			Vector3 tup(0, up.y + keep_size / 2, back.z);
+			right.x = MIN(right.x, keep_size_x * 0.25);
+			Vector3 tup(0, up.y + keep_size_x / 2, back.z);
 			ADD_TRIANGLE(tup, right + up + back, -right + up + back);
 		} break;
 
 		case Camera3D::PROJECTION_FRUSTUM: {
-			float hsize = camera->get_size() / 2.0;
+			float hsize = camera->get_size_x() / 2.0;
 
 			Vector3 side = Vector3(hsize, 0, -camera->get_near()).normalized();
 			side.x *= size_factor.x;

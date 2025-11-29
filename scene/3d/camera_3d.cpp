@@ -49,10 +49,12 @@ void Camera3D::fti_pump_property() {
 			fov.pump();
 		} break;
 		case PROJECTION_ORTHOGONAL: {
-			size.pump();
+			size_x.pump();
+			size_y.pump();
 		} break;
 		case PROJECTION_FRUSTUM: {
-			size.pump();
+			size_x.pump();
+			size_y.pump();
 			frustum_offset.pump();
 		} break;
 	}
@@ -76,13 +78,13 @@ void Camera3D::fti_update_servers_property() {
 				}
 			} break;
 			case PROJECTION_ORTHOGONAL: {
-				if (size.interpolate(f) || _near.interpolate(f) || _far.interpolate(f)) {
-					RS::get_singleton()->camera_set_orthogonal(camera, size.interpolated(), _near.interpolated(), _far.interpolated());
+				if (size_x.interpolate(f) || size_y.interpolate(f) || _near.interpolate(f) || _far.interpolate(f)) {
+					RS::get_singleton()->camera_set_orthogonal(camera, size_x.interpolated(), size_y.interpolated(), _near.interpolated(), _far.interpolated());
 				}
 			} break;
 			case PROJECTION_FRUSTUM: {
-				if (size.interpolate(f) || frustum_offset.interpolate(f) || _near.interpolate(f) || _far.interpolate(f)) {
-					RS::get_singleton()->camera_set_frustum(camera, size.interpolated(), frustum_offset.interpolated(), _near.interpolated(), _far.interpolated());
+				if (size_x.interpolate(f) || size_y.interpolate(f) || frustum_offset.interpolate(f) || _near.interpolate(f) || _far.interpolate(f)) {
+					RS::get_singleton()->camera_set_frustum(camera, size_x.interpolated(), size_y.interpolated(), frustum_offset.interpolated(), _near.interpolated(), _far.interpolated());
 				}
 			} break;
 		}
@@ -107,10 +109,10 @@ void Camera3D::_update_camera_mode() {
 
 		} break;
 		case PROJECTION_ORTHOGONAL: {
-			set_orthogonal(size, _near, _far);
+			set_orthogonal(size_x, size_y, _near, _far);
 		} break;
 		case PROJECTION_FRUSTUM: {
-			set_frustum(size, frustum_offset, _near, _far);
+			set_frustum(size_x, size_y, frustum_offset, _near, _far);
 		} break;
 	}
 	fti_notify_node_changed(false);
@@ -122,7 +124,7 @@ void Camera3D::_validate_property(PropertyInfo &p_property) const {
 			if (mode != PROJECTION_PERSPECTIVE) {
 				p_property.usage = PROPERTY_USAGE_NO_EDITOR;
 			}
-		} else if (p_property.name == "size") {
+		} else if (p_property.name == "size_x" || p_property.name == "size_y") {
 			if (mode != PROJECTION_ORTHOGONAL && mode != PROJECTION_FRUSTUM) {
 				p_property.usage = PROPERTY_USAGE_NO_EDITOR;
 			}
@@ -274,10 +276,10 @@ Projection Camera3D::_get_camera_projection(real_t p_near) const {
 			cm.set_perspective(fov, viewport_size.aspect(), p_near, _far, keep_aspect == KEEP_WIDTH);
 		} break;
 		case PROJECTION_ORTHOGONAL: {
-			cm.set_orthogonal(size, viewport_size.aspect(), p_near, _far, keep_aspect == KEEP_WIDTH);
+			cm.set_orthogonal(size_x, size_y, viewport_size.aspect(), p_near, _far, keep_aspect == KEEP_WIDTH);
 		} break;
 		case PROJECTION_FRUSTUM: {
-			cm.set_frustum(size, viewport_size.aspect(), frustum_offset, p_near, _far);
+			cm.set_frustum(size_x, size_y, frustum_offset, p_near, _far);
 		} break;
 	}
 
@@ -304,28 +306,30 @@ void Camera3D::set_perspective(real_t p_fovy_degrees, real_t p_z_near, real_t p_
 	force_change = false;
 }
 
-void Camera3D::set_orthogonal(real_t p_size, real_t p_z_near, real_t p_z_far) {
-	if (!force_change && size == p_size && p_z_near == _near && p_z_far == _far && mode == PROJECTION_ORTHOGONAL) {
+void Camera3D::set_orthogonal(real_t p_size_x, real_t p_size_y, real_t p_z_near, real_t p_z_far) {
+	if (!force_change && size_x == p_size_x && size_y == p_size_y && p_z_near == _near && p_z_far == _far && mode == PROJECTION_ORTHOGONAL) {
 		return;
 	}
 
-	size = p_size;
+	size_x = p_size_x;
+	size_y = p_size_y;
 
 	_near = p_z_near;
 	_far = p_z_far;
 	mode = PROJECTION_ORTHOGONAL;
 	force_change = false;
 
-	RenderingServer::get_singleton()->camera_set_orthogonal(camera, size, _near, _far);
+	RenderingServer::get_singleton()->camera_set_orthogonal(camera, size_x, size_y, _near, _far);
 	update_gizmos();
 }
 
-void Camera3D::set_frustum(real_t p_size, Vector2 p_offset, real_t p_z_near, real_t p_z_far) {
-	if (!force_change && size == p_size && frustum_offset == p_offset && p_z_near == _near && p_z_far == _far && mode == PROJECTION_FRUSTUM) {
+void Camera3D::set_frustum(real_t p_size_x, real_t p_size_y, Vector2 p_offset, real_t p_z_near, real_t p_z_far) {
+	if (!force_change && size_x == p_size_x && size_y == p_size_y && frustum_offset == p_offset && p_z_near == _near && p_z_far == _far && mode == PROJECTION_FRUSTUM) {
 		return;
 	}
 
-	size = p_size;
+	size_x = p_size_x;
+	size_y = p_size_y;
 	frustum_offset = p_offset;
 
 	_near = p_z_near;
@@ -333,7 +337,7 @@ void Camera3D::set_frustum(real_t p_size, Vector2 p_offset, real_t p_z_near, rea
 	mode = PROJECTION_FRUSTUM;
 	force_change = false;
 
-	RenderingServer::get_singleton()->camera_set_frustum(camera, size, frustum_offset, _near, _far);
+	RenderingServer::get_singleton()->camera_set_frustum(camera, size_x, size_y, frustum_offset, _near, _far);
 	update_gizmos();
 }
 
@@ -422,14 +426,8 @@ Vector3 Camera3D::project_ray_origin(const Point2 &p_pos) const {
 
 	if (mode == PROJECTION_ORTHOGONAL) {
 		Vector2 pos = cpos / viewport_size;
-		real_t vsize, hsize;
-		if (keep_aspect == KEEP_WIDTH) {
-			vsize = size / viewport_size.aspect();
-			hsize = size;
-		} else {
-			hsize = size * viewport_size.aspect();
-			vsize = size;
-		}
+		real_t vsize = size_x;
+		real_t hsize = size_y;
 
 		Vector3 ray;
 		ray.x = pos.x * (hsize)-hsize / 2;
@@ -631,12 +629,14 @@ void Camera3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_camera_projection"), &Camera3D::get_camera_projection);
 	ClassDB::bind_method(D_METHOD("get_fov"), &Camera3D::get_fov);
 	ClassDB::bind_method(D_METHOD("get_frustum_offset"), &Camera3D::get_frustum_offset);
-	ClassDB::bind_method(D_METHOD("get_size"), &Camera3D::get_size);
+	ClassDB::bind_method(D_METHOD("get_size_x"), &Camera3D::get_size_x);
+	ClassDB::bind_method(D_METHOD("get_size_y"), &Camera3D::get_size_y);
 	ClassDB::bind_method(D_METHOD("get_far"), &Camera3D::get_far);
 	ClassDB::bind_method(D_METHOD("get_near"), &Camera3D::get_near);
 	ClassDB::bind_method(D_METHOD("set_fov", "fov"), &Camera3D::set_fov);
 	ClassDB::bind_method(D_METHOD("set_frustum_offset", "offset"), &Camera3D::set_frustum_offset);
-	ClassDB::bind_method(D_METHOD("set_size", "size"), &Camera3D::set_size);
+	ClassDB::bind_method(D_METHOD("set_size_x", "size_x"), &Camera3D::set_size_x);
+	ClassDB::bind_method(D_METHOD("set_size_y", "size_y"), &Camera3D::set_size_y);
 	ClassDB::bind_method(D_METHOD("set_far", "far"), &Camera3D::set_far);
 	ClassDB::bind_method(D_METHOD("set_near", "near"), &Camera3D::set_near);
 	ClassDB::bind_method(D_METHOD("get_projection"), &Camera3D::get_projection);
@@ -680,7 +680,8 @@ void Camera3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "projection", PROPERTY_HINT_ENUM, "Perspective,Orthogonal,Frustum"), "set_projection", "get_projection");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "current"), "set_current", "is_current");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fov", PROPERTY_HINT_RANGE, "1,179,0.1,degrees"), "set_fov", "get_fov");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size_x", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_size_x", "get_size_x");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size_y", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_size_y", "get_size_y");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "frustum_offset", PROPERTY_HINT_NONE, "suffix:m"), "set_frustum_offset", "get_frustum_offset");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "near", PROPERTY_HINT_RANGE, "0.001,10,0.001,or_greater,exp,suffix:m"), "set_near", "get_near");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "far", PROPERTY_HINT_RANGE, "0.01,4000,0.01,or_greater,exp,suffix:m"), "set_far", "get_far");
@@ -701,8 +702,12 @@ real_t Camera3D::get_fov() const {
 	return fov;
 }
 
-real_t Camera3D::get_size() const {
-	return size;
+real_t Camera3D::get_size_x() const {
+	return size_x;
+}
+
+real_t Camera3D::get_size_y() const {
+	return size_y;
 }
 
 real_t Camera3D::get_near() const {
@@ -727,9 +732,15 @@ void Camera3D::set_fov(real_t p_fov) {
 	_update_camera_mode();
 }
 
-void Camera3D::set_size(real_t p_size) {
-	ERR_FAIL_COND(p_size <= CMP_EPSILON);
-	size = p_size;
+void Camera3D::set_size_x(real_t p_size_x) {
+	ERR_FAIL_COND(p_size_x <= CMP_EPSILON);
+	size_x = p_size_x;
+	_update_camera_mode();
+}
+
+void Camera3D::set_size_y(real_t p_size_y) {
+	ERR_FAIL_COND(p_size_y <= CMP_EPSILON);
+	size_y = p_size_y;
 	_update_camera_mode();
 }
 

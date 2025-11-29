@@ -2606,9 +2606,9 @@ static void _register_variant_builtin_methods_misc() {
 	bind_static_method(Projection, create_perspective_hmd, sarray("fovy", "aspect", "z_near", "z_far", "flip_fov", "eye", "intraocular_dist", "convergence_dist"), varray());
 	bind_static_method(Projection, create_for_hmd, sarray("eye", "aspect", "intraocular_dist", "display_width", "display_to_lens", "oversample", "z_near", "z_far"), varray());
 	bind_static_method(Projection, create_orthogonal, sarray("left", "right", "bottom", "top", "z_near", "z_far"), varray());
-	bind_static_method(Projection, create_orthogonal_aspect, sarray("size", "aspect", "z_near", "z_far", "flip_fov"), varray(false));
+	bind_static_method(Projection, create_orthogonal_aspect, sarray("size_x", "size_y", "z_near", "z_far", "flip_fov"), varray(false));
 	bind_static_method(Projection, create_frustum, sarray("left", "right", "bottom", "top", "z_near", "z_far"), varray());
-	bind_static_method(Projection, create_frustum_aspect, sarray("size", "aspect", "offset", "z_near", "z_far", "flip_fov"), varray(false));
+	bind_static_method(Projection, create_frustum_aspect, sarray("size_x", "size_y", "offset", "z_near", "z_far", "flip_fov"), varray(false));
 	bind_static_method(Projection, create_fit_aabb, sarray("aabb"), varray());
 
 	bind_method(Projection, determinant, sarray(), varray());

@@ -687,14 +687,15 @@ void SceneImportSettingsDialog::_update_camera() {
 	}
 
 	Vector3 center = camera_aabb.get_center();
-	float camera_size = camera_aabb.get_longest_axis_size();
+	float camera_size_x = camera_aabb.get_longest_axis_size();
+	float camera_size_y = camera_aabb.get_shortest_axis_size();
 
-	camera->set_orthogonal(camera_size * zoom, 0.0001, camera_size * 2);
+	camera->set_orthogonal(camera_size_x * zoom, camera_size_y * zoom, 0.0001, camera_size_x * 2);
 
 	Transform3D xf;
 	xf.basis = Basis(Vector3(0, 1, 0), rot_y) * Basis(Vector3(1, 0, 0), rot_x);
 	xf.origin = center;
-	xf.translate_local(0, 0, camera_size);
+	xf.translate_local(0, 0, camera_size_x * 2);
 
 	camera->set_transform(xf);
 }

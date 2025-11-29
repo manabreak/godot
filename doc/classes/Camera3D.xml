@@ -114,19 +114,21 @@
 		</method>
 		<method name="set_frustum">
 			<return type="void" />
-			<param index="0" name="size" type="float" />
-			<param index="1" name="offset" type="Vector2" />
-			<param index="2" name="z_near" type="float" />
-			<param index="3" name="z_far" type="float" />
+			<param index="0" name="size_x" type="float" />
+			<param index="1" name="size_y" type="float" />
+			<param index="2" name="offset" type="Vector2" />
+			<param index="3" name="z_near" type="float" />
+			<param index="4" name="z_far" type="float" />
 			<description>
 				Sets the camera projection to frustum mode (see [constant PROJECTION_FRUSTUM]), by specifying a [param size], an [param offset], and the [param z_near] and [param z_far] clip planes in world space units. See also [member frustum_offset].
 			</description>
 		</method>
 		<method name="set_orthogonal">
 			<return type="void" />
-			<param index="0" name="size" type="float" />
-			<param index="1" name="z_near" type="float" />
-			<param index="2" name="z_far" type="float" />
+			<param index="0" name="size_x" type="float" />
+			<param index="1" name="size_y" type="float" />
+			<param index="2" name="z_near" type="float" />
+			<param index="3" name="z_far" type="float" />
 			<description>
 				Sets the camera projection to orthogonal mode (see [constant PROJECTION_ORTHOGONAL]), by specifying a [param size], and the [param z_near] and [param z_far] clip planes in world space units.
 				As a hint, 3D games that look 2D often use this projection, with [param size] specified in pixels.
@@ -207,8 +209,11 @@
 		<member name="projection" type="int" setter="set_projection" getter="get_projection" enum="Camera3D.ProjectionType" default="0">
 			The camera's projection mode. In [constant PROJECTION_PERSPECTIVE] mode, objects' Z distance from the camera's local space scales their perceived size.
 		</member>
-		<member name="size" type="float" setter="set_size" getter="get_size" default="1.0">
-			The camera's size in meters measured as the diameter of the width or height, depending on [member keep_aspect]. Only applicable in orthogonal and frustum modes.
+		<member name="size_x" type="float" setter="set_size_x" getter="get_size_x" default="1.0">
+			The camera's size in meters measured as the diameter of the width. Only applicable in orthogonal and frustum modes.
+		</member>
+		<member name="size_y" type="float" setter="set_size_y" getter="get_size_y" default="1.0">
+			The camera's size in meters measured as the diameter of the height. Only applicable in orthogonal and frustum modes.
 		</member>
 		<member name="v_offset" type="float" setter="set_v_offset" getter="get_v_offset" default="0.0">
 			The vertical (Y) offset of the camera viewport.

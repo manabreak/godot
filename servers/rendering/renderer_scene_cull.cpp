@@ -87,20 +87,22 @@ void RendererSceneCull::camera_set_perspective(RID p_camera, float p_fovy_degree
 	camera->zfar = p_z_far;
 }
 
-void RendererSceneCull::camera_set_orthogonal(RID p_camera, float p_size, float p_z_near, float p_z_far) {
+void RendererSceneCull::camera_set_orthogonal(RID p_camera, float p_size_x, float p_size_y, float p_z_near, float p_z_far) {
 	Camera *camera = camera_owner.get_or_null(p_camera);
 	ERR_FAIL_NULL(camera);
 	camera->type = Camera::ORTHOGONAL;
-	camera->size = p_size;
+	camera->size_x = p_size_x;
+	camera->size_y = p_size_y;
 	camera->znear = p_z_near;
 	camera->zfar = p_z_far;
 }
 
-void RendererSceneCull::camera_set_frustum(RID p_camera, float p_size, Vector2 p_offset, float p_z_near, float p_z_far) {
+void RendererSceneCull::camera_set_frustum(RID p_camera, float p_size_x, float p_size_y, Vector2 p_offset, float p_z_near, float p_z_far) {
 	Camera *camera = camera_owner.get_or_null(p_camera);
 	ERR_FAIL_NULL(camera);
 	camera->type = Camera::FRUSTUM;
-	camera->size = p_size;
+	camera->size_x = p_size_x;
+	camera->size_y = p_size_y;
 	camera->offset = p_offset;
 	camera->znear = p_z_near;
 	camera->zfar = p_z_far;
@@ -2627,8 +2629,8 @@ void RendererSceneCull::render_camera(const Ref<RenderSceneBuffers> &p_render_bu
 		switch (camera->type) {
 			case Camera::ORTHOGONAL: {
 				projection.set_orthogonal(
-						camera->size,
-						p_viewport_size.width / (float)p_viewport_size.height,
+						camera->size_x,
+						camera->size_y,
 						camera->znear,
 						camera->zfar,
 						camera->vaspect);
@@ -2645,8 +2647,8 @@ void RendererSceneCull::render_camera(const Ref<RenderSceneBuffers> &p_render_bu
 			} break;
 			case Camera::FRUSTUM: {
 				projection.set_frustum(
-						camera->size,
-						p_viewport_size.width / (float)p_viewport_size.height,
+						camera->size_x,
+						camera->size_y,
 						camera->offset,
 						camera->znear,
 						camera->zfar,

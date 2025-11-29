@@ -81,7 +81,7 @@ Ref<GLTFCamera> GLTFCamera::from_node(const Camera3D *p_camera) {
 	// glTF spec (yfov) is in radians, Godot's camera (fov) is in degrees.
 	c->set_fov(Math::deg_to_rad(p_camera->get_fov()));
 	// glTF spec (xmag and ymag) is a radius in meters, Godot's camera (size) is a diameter in meters.
-	c->set_size_mag(p_camera->get_size() * 0.5f);
+	c->set_size_mag(p_camera->get_size_x() * 0.5f);
 	c->set_depth_far(p_camera->get_far());
 	c->set_depth_near(p_camera->get_near());
 	return c;
@@ -93,7 +93,8 @@ Camera3D *GLTFCamera::to_node() const {
 	// glTF spec (yfov) is in radians, Godot's camera (fov) is in degrees.
 	camera->set_fov(Math::rad_to_deg(fov));
 	// glTF spec (xmag and ymag) is a radius in meters, Godot's camera (size) is a diameter in meters.
-	camera->set_size(size_mag * 2.0f);
+	camera->set_size_x(size_mag * 2.0f);
+	camera->set_size_y(size_mag * 2.0f);
 	camera->set_near(depth_near);
 	camera->set_far(depth_far);
 	return camera;

@@ -138,9 +138,9 @@ Projection Projection::create_orthogonal(real_t p_left, real_t p_right, real_t p
 	return proj;
 }
 
-Projection Projection::create_orthogonal_aspect(real_t p_size, real_t p_aspect, real_t p_znear, real_t p_zfar, bool p_flip_fov) {
+Projection Projection::create_orthogonal_aspect(real_t p_size_x, real_t p_size_y, real_t p_znear, real_t p_zfar, bool p_flip_fov) {
 	Projection proj;
-	proj.set_orthogonal(p_size, p_aspect, p_znear, p_zfar, p_flip_fov);
+	proj.set_orthogonal(p_size_x, p_size_y, p_znear, p_zfar, p_flip_fov);
 	return proj;
 }
 
@@ -150,9 +150,9 @@ Projection Projection::create_frustum(real_t p_left, real_t p_right, real_t p_bo
 	return proj;
 }
 
-Projection Projection::create_frustum_aspect(real_t p_size, real_t p_aspect, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov) {
+Projection Projection::create_frustum_aspect(real_t p_size_x, real_t p_size_y, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov) {
 	Projection proj;
-	proj.set_frustum(p_size, p_aspect, p_offset, p_near, p_far, p_flip_fov);
+	proj.set_frustum(p_size_x, p_size_y, p_offset, p_near, p_far, p_flip_fov);
 	return proj;
 }
 
@@ -353,12 +353,14 @@ void Projection::set_orthogonal(real_t p_left, real_t p_right, real_t p_bottom, 
 	columns[3][3] = 1.0;
 }
 
-void Projection::set_orthogonal(real_t p_size, real_t p_aspect, real_t p_znear, real_t p_zfar, bool p_flip_fov) {
+void Projection::set_orthogonal(real_t p_size_x, real_t p_size_y, real_t p_znear, real_t p_zfar, bool p_flip_fov) {
 	if (!p_flip_fov) {
-		p_size *= p_aspect;
+		auto tmp = p_size_x;
+		p_size_x = p_size_y;
+		p_size_y = tmp;
 	}
 
-	set_orthogonal(-p_size / 2, +p_size / 2, -p_size / p_aspect / 2, +p_size / p_aspect / 2, p_znear, p_zfar);
+	set_orthogonal(-p_size_x / 2, +p_size_x / 2, -p_size_y / 2, +p_size_y / 2, p_znear, p_zfar);
 }
 
 void Projection::set_frustum(real_t p_left, real_t p_right, real_t p_bottom, real_t p_top, real_t p_near, real_t p_far) {
@@ -393,12 +395,14 @@ void Projection::set_frustum(real_t p_left, real_t p_right, real_t p_bottom, rea
 	te[15] = 0;
 }
 
-void Projection::set_frustum(real_t p_size, real_t p_aspect, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov) {
+void Projection::set_frustum(real_t p_size_x, real_t p_size_y, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov) {
 	if (!p_flip_fov) {
-		p_size *= p_aspect;
+		auto tmp = p_size_x;
+		p_size_x = p_size_y;
+		p_size_y = tmp;
 	}
 
-	set_frustum(-p_size / 2 + p_offset.x, +p_size / 2 + p_offset.x, -p_size / p_aspect / 2 + p_offset.y, +p_size / p_aspect / 2 + p_offset.y, p_near, p_far);
+	set_frustum(-p_size_x / 2 + p_offset.x, +p_size_x / 2 + p_offset.x, -p_size_y / 2 + p_offset.y, +p_size_y / 2 + p_offset.y, p_near, p_far);
 }
 
 real_t Projection::get_z_far() const {

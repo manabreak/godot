@@ -450,7 +450,7 @@ Error SceneDebugger::_msg_transform_camera_3d(const Array &p_args) {
 	if (is_perspective) {
 		override_camera->set_perspective(size_or_fov, depth_near, depth_far);
 	} else {
-		override_camera->set_orthogonal(size_or_fov, depth_near, depth_far);
+		override_camera->set_orthogonal(size_or_fov, size_or_fov, depth_near, depth_far);
 	}
 	override_camera->set_transform(transform);
 	RuntimeNodeSelect::get_singleton()->_queue_selection_update();

@@ -1155,7 +1155,8 @@ void ScriptEditorDebugger::_notification(int p_what) {
 						Array msg = { cam->get_camera_transform() };
 						if (cam->get_projection() == Camera3D::PROJECTION_ORTHOGONAL) {
 							msg.push_back(false);
-							msg.push_back(cam->get_size());
+							msg.push_back(cam->get_size_x());
+							msg.push_back(cam->get_size_y());
 						} else {
 							msg.push_back(true);
 							msg.push_back(cam->get_fov());

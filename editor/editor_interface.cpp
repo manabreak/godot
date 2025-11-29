@@ -202,7 +202,7 @@ Vector<Ref<Texture2D>> EditorInterface::make_mesh_previews(const Vector<Ref<Mesh
 		xform = mesh_xform * xform;
 
 		RS::get_singleton()->camera_set_transform(camera, xform * Transform3D(Basis(), Vector3(0, 0, 3)));
-		RS::get_singleton()->camera_set_orthogonal(camera, m * 2, 0.01, 1000.0);
+		RS::get_singleton()->camera_set_orthogonal(camera, m * 2, m * 2, 0.01, 1000.0);
 
 		RS::get_singleton()->instance_set_transform(light_instance, xform * Transform3D().looking_at(Vector3(-2, -1, -1), Vector3(0, 1, 0)));
 		RS::get_singleton()->instance_set_transform(light_instance2, xform * Transform3D().looking_at(Vector3(+1, -1, -2), Vector3(0, 1, 0)));
@@ -285,17 +285,18 @@ void EditorInterface::make_scene_preview(const String &p_path, Node *p_scene, in
 
 	// Calculate the camera and lighting position based on the size of the scene.
 	Vector3 center = scene_aabb.get_center();
-	float camera_size = scene_aabb.get_longest_axis_size();
+	float camera_size_x = scene_aabb.get_longest_axis_size();
+	float camera_size_y = scene_aabb.get_shortest_axis_size();
 
 	const float cam_rot_x = -Math::PI / 4;
 	const float cam_rot_y = -Math::PI / 4;
 
-	camera->set_orthogonal(camera_size * 2.0, 0.0001, camera_size * 2.0);
+	camera->set_orthogonal(camera_size_x * 2.0, camera_size_y * 2.0, 0.0001, camera_size_x * 2.0);
 
 	Transform3D xf;
 	xf.basis = Basis(Vector3(0, 1, 0), cam_rot_y) * Basis(Vector3(1, 0, 0), cam_rot_x);
 	xf.origin = center;
-	xf.translate_local(0, 0, camera_size);
+	xf.translate_local(0, 0, camera_size_x * 2.0);
 
 	camera->set_transform(xf);
 

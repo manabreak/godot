@@ -80,9 +80,9 @@ struct [[nodiscard]] Projection {
 	void set_perspective(real_t p_fovy_degrees, real_t p_aspect, real_t p_z_near, real_t p_z_far, bool p_flip_fov, int p_eye, real_t p_intraocular_dist, real_t p_convergence_dist);
 	void set_for_hmd(int p_eye, real_t p_aspect, real_t p_intraocular_dist, real_t p_display_width, real_t p_display_to_lens, real_t p_oversample, real_t p_z_near, real_t p_z_far);
 	void set_orthogonal(real_t p_left, real_t p_right, real_t p_bottom, real_t p_top, real_t p_znear, real_t p_zfar);
-	void set_orthogonal(real_t p_size, real_t p_aspect, real_t p_znear, real_t p_zfar, bool p_flip_fov = false);
+	void set_orthogonal(real_t p_size_x, real_t p_size_y, real_t p_znear, real_t p_zfar, bool p_flip_fov = false);
 	void set_frustum(real_t p_left, real_t p_right, real_t p_bottom, real_t p_top, real_t p_near, real_t p_far);
-	void set_frustum(real_t p_size, real_t p_aspect, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov = false);
+	void set_frustum(real_t p_size_x, real_t p_size_y, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov = false);
 	void adjust_perspective_znear(real_t p_new_znear);
 
 	static Projection create_depth_correction(bool p_flip_y);
@@ -91,9 +91,9 @@ struct [[nodiscard]] Projection {
 	static Projection create_perspective_hmd(real_t p_fovy_degrees, real_t p_aspect, real_t p_z_near, real_t p_z_far, bool p_flip_fov, int p_eye, real_t p_intraocular_dist, real_t p_convergence_dist);
 	static Projection create_for_hmd(int p_eye, real_t p_aspect, real_t p_intraocular_dist, real_t p_display_width, real_t p_display_to_lens, real_t p_oversample, real_t p_z_near, real_t p_z_far);
 	static Projection create_orthogonal(real_t p_left, real_t p_right, real_t p_bottom, real_t p_top, real_t p_znear, real_t p_zfar);
-	static Projection create_orthogonal_aspect(real_t p_size, real_t p_aspect, real_t p_znear, real_t p_zfar, bool p_flip_fov = false);
+	static Projection create_orthogonal_aspect(real_t p_size_x, real_t p_size_y, real_t p_znear, real_t p_zfar, bool p_flip_fov = false);
 	static Projection create_frustum(real_t p_left, real_t p_right, real_t p_bottom, real_t p_top, real_t p_near, real_t p_far);
-	static Projection create_frustum_aspect(real_t p_size, real_t p_aspect, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov = false);
+	static Projection create_frustum_aspect(real_t p_size_x, real_t p_size_y, Vector2 p_offset, real_t p_near, real_t p_far, bool p_flip_fov = false);
 	static Projection create_fit_aabb(const AABB &p_aabb);
 	Projection perspective_znear_adjusted(real_t p_new_znear) const;
 	Plane get_projection_plane(Planes p_plane) const;

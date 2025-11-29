@@ -669,8 +669,9 @@ bool EditorNode3DGizmo::intersect_ray(Camera3D *p_camera, const Point2 &p_point,
 
 		if (p_camera->get_projection() == Camera3D::PROJECTION_ORTHOGONAL) {
 			float aspect = p_camera->get_viewport()->get_visible_rect().size.aspect();
-			float size = p_camera->get_size();
-			scale = size / aspect;
+			float size_x = p_camera->get_size_x();
+			// float size_y = p_camera->get_size_y();
+			scale = size_x / aspect;
 		}
 
 		Point2 center = p_camera->unproject_position(t.origin);

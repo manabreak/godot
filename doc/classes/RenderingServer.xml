@@ -145,10 +145,11 @@
 		<method name="camera_set_frustum">
 			<return type="void" />
 			<param index="0" name="camera" type="RID" />
-			<param index="1" name="size" type="float" />
-			<param index="2" name="offset" type="Vector2" />
-			<param index="3" name="z_near" type="float" />
-			<param index="4" name="z_far" type="float" />
+			<param index="1" name="size_x" type="float" />
+			<param index="2" name="size_y" type="float" />
+			<param index="3" name="offset" type="Vector2" />
+			<param index="4" name="z_near" type="float" />
+			<param index="5" name="z_far" type="float" />
 			<description>
 				Sets camera to use frustum projection. This mode allows adjusting the [param offset] argument to create "tilted frustum" effects.
 			</description>
@@ -156,9 +157,10 @@
 		<method name="camera_set_orthogonal">
 			<return type="void" />
 			<param index="0" name="camera" type="RID" />
-			<param index="1" name="size" type="float" />
-			<param index="2" name="z_near" type="float" />
-			<param index="3" name="z_far" type="float" />
+			<param index="1" name="size_x" type="float" />
+			<param index="2" name="size_y" type="float" />
+			<param index="3" name="z_near" type="float" />
+			<param index="4" name="z_far" type="float" />
 			<description>
 				Sets camera to use orthogonal projection, also known as orthographic projection. Objects remain the same size on the screen no matter how far away they are.
 			</description>

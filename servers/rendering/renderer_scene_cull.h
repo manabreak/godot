@@ -79,7 +79,8 @@ public:
 		Type type;
 		float fov;
 		float znear, zfar;
-		float size;
+		float size_x;
+		float size_y;
 		Vector2 offset;
 		uint32_t visible_layers;
 		bool vaspect;
@@ -95,7 +96,8 @@ public:
 			type = PERSPECTIVE;
 			znear = 0.05;
 			zfar = 4000;
-			size = 1.0;
+			size_x = 1.0;
+			size_y = 1.0;
 			offset = Vector2();
 			vaspect = false;
 		}
@@ -107,8 +109,8 @@ public:
 	virtual void camera_initialize(RID p_rid);
 
 	virtual void camera_set_perspective(RID p_camera, float p_fovy_degrees, float p_z_near, float p_z_far);
-	virtual void camera_set_orthogonal(RID p_camera, float p_size, float p_z_near, float p_z_far);
-	virtual void camera_set_frustum(RID p_camera, float p_size, Vector2 p_offset, float p_z_near, float p_z_far);
+	virtual void camera_set_orthogonal(RID p_camera, float p_size_x, float p_size_y, float p_z_near, float p_z_far);
+	virtual void camera_set_frustum(RID p_camera, float p_size_x, float p_size_y, Vector2 p_offset, float p_z_near, float p_z_far);
 	virtual void camera_set_transform(RID p_camera, const Transform3D &p_transform);
 	virtual void camera_set_cull_mask(RID p_camera, uint32_t p_layers);
 	virtual void camera_set_environment(RID p_camera, RID p_env);

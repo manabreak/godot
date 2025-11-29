@@ -644,7 +644,7 @@ void Node3DEditorViewport::_update_camera(real_t p_interp_delta) {
 		if (orthogonal) {
 			float half_fov = Math::deg_to_rad(get_fov()) / 2.0;
 			float height = 2.0 * cursor.distance * Math::tan(half_fov);
-			camera->set_orthogonal(height, get_znear(), get_zfar());
+			camera->set_orthogonal(height, height, get_znear(), get_zfar());
 		} else {
 			camera->set_perspective(get_fov(), get_znear(), get_zfar());
 		}
@@ -976,7 +976,7 @@ void Node3DEditorViewport::_find_items_at_pos(const Point2 &p_pos, Vector<_RayRe
 Vector3 Node3DEditorViewport::_get_screen_to_space(const Vector3 &p_vector3) {
 	Projection cm;
 	if (orthogonal) {
-		cm.set_orthogonal(camera->get_size(), get_size().aspect(), get_znear() + p_vector3.z, get_zfar());
+		cm.set_orthogonal(camera->get_size_x(), camera->get_size_y(), get_size().aspect(), get_znear() + p_vector3.z, get_zfar());
 	} else {
 		cm.set_perspective(get_fov(), get_size().aspect(), get_znear() + p_vector3.z, get_zfar());
 	}
@@ -8299,7 +8299,7 @@ void Node3DEditor::_init_grid() {
 		real_t camera_distance = Math::abs(camera_position[c]);
 
 		if (orthogonal) {
-			camera_distance = camera->get_size() / 2.0;
+			camera_distance = camera->get_size_x() / 2.0;
 			Vector3 camera_direction = -camera->get_global_transform().get_basis().get_column(2);
 			Plane grid_plane = Plane(normal);
 			Vector3 intersection;

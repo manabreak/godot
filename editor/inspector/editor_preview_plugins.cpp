@@ -789,7 +789,7 @@ EditorMeshPreviewPlugin::EditorMeshPreviewPlugin() {
 	RS::get_singleton()->viewport_attach_camera(viewport, camera);
 	RS::get_singleton()->camera_set_transform(camera, Transform3D(Basis(), Vector3(0, 0, 3)));
 	//RS::get_singleton()->camera_set_perspective(camera,45,0.1,10);
-	RS::get_singleton()->camera_set_orthogonal(camera, 1.0, 0.01, 1000.0);
+	RS::get_singleton()->camera_set_orthogonal(camera, 1.0, 1.0, 0.01, 1000.0);
 
 	if (GLOBAL_GET("rendering/lights_and_shadows/use_physical_light_units")) {
 		camera_attributes = RS::get_singleton()->camera_attributes_create();
